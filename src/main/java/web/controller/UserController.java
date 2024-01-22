@@ -36,9 +36,20 @@ public class UserController {
     }
 
     @PostMapping(value = "/updateUser")
-    public String updateUser(@ModelAttribute("user") User user) {
+    public String updateUser(@ModelAttribute("user") User user) throws Exception {
         user.setId(user.getId());
-        userService.updateUser(user);
+        boolean userFound = false;
+        for (User usere : userService.getAllUsers()) {
+            if (usere.getId() == user.getId()) {
+                userService.updateUser(user);
+                userFound = true;
+                break;
+            }
+        }
+
+        if (!userFound) {
+            throw new Exception("User not found");
+        }
         return "redirect:/";
     }
 
